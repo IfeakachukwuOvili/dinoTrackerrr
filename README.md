@@ -4,6 +4,8 @@
 
 Built for speed during a hackathon, but designed with full functionality and secure user/data handling.
 
+Originally the project was a hackathon challenge but we could not meet up to deadline so I came back months later to "fix it".
+
 ---
 
 ## 📑 Table of Contents
