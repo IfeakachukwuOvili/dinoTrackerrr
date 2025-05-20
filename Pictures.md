@@ -1,4 +1,5 @@
-I have included pictures for you to visualize the project
+Here is a sneak peak into the project, if you happen to clone the project, you would see some pleasant surprises that were not shown here :)
+
 ![image](https://github.com/user-attachments/assets/64c36d45-7662-4a21-a740-9f3a3840136c)
 
 ![image](https://github.com/user-attachments/assets/fe6a082d-ba17-4495-896c-5dc6d1c2d8f0)
