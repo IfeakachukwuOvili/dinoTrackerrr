@@ -101,3 +101,49 @@ npm install
 npm run dev
 # or
 node index.js
+```
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+### Environment
+- Backend: http://localhost:5000
+- Frontend: http://localhost:5173 (Vite default)
+---
+
+
+### API EndPoints
+| Method | Endpoint                      | Description                 |
+| ------ | ----------------------------- | --------------------------- |
+| POST   | `/api/users`                  | Create a new user           |
+| GET    | `/api/users`                  | List all users              |
+| GET    | `/api/users/:id`              | Get user by ID              |
+| PUT    | `/api/users/:id`              | Update user                 |
+| DELETE | `/api/users/:id`              | Delete user and their data  |
+| POST   | `/api/plans`                  | Create a savings plan       |
+| GET    | `/api/plans?userEmail=...`    | Get all plans for a user    |
+| POST   | `/api/expenses`               | Create an expense           |
+| GET    | `/api/expenses?userEmail=...` | Get all expenses for a user |
+---
+🔐 Account & Data Management
+- Multiple Accounts: Each user signs up with a unique email and has isolated data
+- Account Deletion: Accessible from the profile modal, with confirmation prompt; triggers full data removal (plans and expenses)
+- Session Handling: Sessions are maintained via localStorage
+
+## 🧰 Tech Stack
+- Frontend: React (Vite), Inline CSS, Framer Motion
+- Backend: Node.js, Express, MongoDB (Mongoose)
+- Other Tools: CORS, dotenv
+---
+
+## 🤝 Contributing
+- Contributions are welcome!
+- Fork this repo and submit a pull request. For major changes, please open an issue first.
+---
+
+### License
+MIT License
+
+
