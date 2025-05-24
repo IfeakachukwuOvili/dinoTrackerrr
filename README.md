@@ -31,7 +31,6 @@ Originally the project was a hackathon challenge but we could not meet up to dea
 - Expense tracking per user
 - Profile modal for:
   - Editing user info
-  - Switching themes (light/dark)
   - Deleting account (with confirmation)
 - Secure data deletion: removes all related plans and expenses on account deletion
 
@@ -135,7 +134,7 @@ npm run dev
 - Session Handling: Sessions are maintained via localStorage
 
 ## 🧰 Tech Stack
-- Frontend: React (Vite), Inline CSS, Framer Motion
+- Frontend: React (Vite), Inline CSS
 - Backend: Node.js, Express, MongoDB (Mongoose)
 - Other Tools: CORS, dotenv
 ---
