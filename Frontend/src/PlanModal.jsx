@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 const PlanModal = ({
   userEmail,
@@ -16,9 +18,12 @@ const PlanModal = ({
 
   useEffect(() => {
     if (!userEmail) return;
-    fetch(`http://localhost:5000/api/plans?userEmail=${encodeURIComponent(userEmail)}`)
-      .then(res => res.json())
-      .then(data => { setPlans(data); setLoading(false); })
+    axios.get(`${API_BASE_URL}/api/plans?userEmail=${encodeURIComponent(userEmail)}`)
+      .then(res => {
+        const data = res.data;
+        setPlans(data);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [userEmail, showCreate]);
 
@@ -29,7 +34,7 @@ const PlanModal = ({
 
   const handleDelete = async (planId) => {
     if (!window.confirm('Delete this plan?')) return;
-    await fetch(`http://localhost:5000/api/plans/${planId}`, { method: 'DELETE' });
+    await axios.delete(`${API_BASE_URL}/api/plans/${planId}`);
     setPlans(plans.filter(p => p._id !== planId));
   };
 
@@ -40,12 +45,8 @@ const PlanModal = ({
       setError('All fields required');
       return;
     }
-    const res = await fetch('http://localhost:5000/api/plans', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...newPlan, userEmail }),
-    });
-    if (!res.ok) {
+    const res = await axios.post(`${API_BASE_URL}/api/plans`, { ...newPlan, userEmail });
+    if (res.status !== 201) {
       const errorText = await res.text();
       console.error('Failed to create plan:', res.status, errorText);
       setError('Failed to create plan');

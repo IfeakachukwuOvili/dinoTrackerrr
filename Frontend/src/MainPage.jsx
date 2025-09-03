@@ -4,6 +4,8 @@ import ConfirmPopup from './ConfirmPopup';
 import Popup from './Popup';
 import PlanModal from './PlanModal';
 import ProfileModal from './ProfileModal';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 function MainPage() {
   const navigate = useNavigate();
@@ -40,8 +42,8 @@ function MainPage() {
   const confirmDeleteExpense = async () => {
     if (!expenseToDelete) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/expenses/${expenseToDelete}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete');
+      const res = await axios.delete(`${API_BASE_URL}/api/expenses/${expenseToDelete}`);
+      if (res.status !== 200) throw new Error('Failed to delete');
       setExpenses(expenses.filter(exp => exp._id !== expenseToDelete));
     } catch (err) {
       alert('Error: ' + err.message);
@@ -79,9 +81,9 @@ function MainPage() {
     setUserEmail(email);
     if (email) {
       // Fetch user info
-      fetch('http://localhost:5000/api/users')
-        .then(res => res.json())
-        .then(users => {
+      axios.get(`${API_BASE_URL}/api/users`)
+        .then(res => {
+          const users = res.data;
           const userObj = users.find(u => u.email === email);
           if (userObj) {
             setUsername(userObj.name);
@@ -89,9 +91,9 @@ function MainPage() {
           }
         });
       // Fetch all plans
-      fetch(`http://localhost:5000/api/plans?userEmail=${encodeURIComponent(email)}`)
-        .then(res => res.json())
-        .then(plansData => {
+      axios.get(`${API_BASE_URL}/api/plans?userEmail=${encodeURIComponent(email)}`)
+        .then(res => {
+          const plansData = res.data;
           setPlans(plansData);
           // Try to restore last selected plan
           const lastPlanId = localStorage.getItem('currentPlanId');
@@ -104,9 +106,11 @@ function MainPage() {
           setTotalBudget(plan ? Number(plan.budget) : 0);
         });
       // Fetch expenses
-      fetch(`http://localhost:5000/api/expenses?userEmail=${encodeURIComponent(email)}`)
-        .then(res => res.json())
-        .then(data => setExpenses(data))
+      axios.get(`${API_BASE_URL}/api/expenses?userEmail=${encodeURIComponent(email)}`)
+        .then(res => {
+          const data = res.data;
+          setExpenses(data);
+        })
         .catch(err => console.error('Failed to fetch expenses:', err));
     }
   }, []);
@@ -141,12 +145,12 @@ function MainPage() {
       // Edit existing
       const expenseToEdit = filteredExpenses[editIndex];
       try {
-        const res = await fetch(`http://localhost:5000/api/expenses/${expenseToEdit._id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: expenseName, amount: expenseAmount, date: expenseDate })
+        const res = await axios.put(`${API_BASE_URL}/api/expenses/${expenseToEdit._id}`, {
+          name: expenseName,
+          amount: expenseAmount,
+          date: expenseDate
         });
-        const updated = await res.json();
+        const updated = res.data;
         if (!res.ok) throw new Error(updated.error || 'Failed to update');
         const newExpenses = expenses.map((exp) => exp._id === updated._id ? updated : exp);
         setExpenses(newExpenses);
@@ -158,13 +162,9 @@ function MainPage() {
       // Add new
       const newExpense = { userEmail, name: expenseName, amount: expenseAmount, date: expenseDate };
       try {
-        const res = await fetch('http://localhost:5000/api/expenses', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newExpense),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to add expense');
+        const res = await axios.post(`${API_BASE_URL}/api/expenses`, newExpense);
+        const data = res.data;
+        if (res.status !== 201) throw new Error(data.error || 'Failed to add expense');
         setExpenses([...expenses, data]);
       } catch (err) {
         alert('Error: ' + err.message);
@@ -263,12 +263,8 @@ function MainPage() {
           user={user}
           onClose={() => setShowProfileModal(false)}
           onSave={async (editUser) => {
-            const res = await fetch(`http://localhost:5000/api/users/${editUser._id}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(editUser),
-            });
-            if (res.ok) {
+            const res = await axios.put(`${API_BASE_URL}/api/users/${editUser._id}`, editUser);
+            if (res.status === 200) {
               setUser(editUser);
               setUsername(editUser.name);
             }

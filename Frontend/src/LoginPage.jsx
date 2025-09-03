@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -12,8 +14,8 @@ function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/users');
-      const users = await res.json();
+      const res = await axios.get(`${API_BASE_URL}/api/users`);
+      const users = res.data;
       const user = users.find(u => u.email === email);
       if (!user) throw new Error('Dino not found! Check your email or sign up.');
       localStorage.setItem('userEmail', email);

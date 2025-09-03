@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 function Signup() {
   const navigate = useNavigate();
@@ -22,10 +24,9 @@ function Signup() {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email /*, password */ }), // Password not saved in backend model yet
+      const res = await axios.post(`${API_BASE_URL}/api/users`, {
+        name,
+        email, // Password not saved in backend model yet
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to sign up');

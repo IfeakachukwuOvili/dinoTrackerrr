@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ConfirmPopup from './ConfirmPopup';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 const ProfileModal = ({ user, onClose, onSave, theme, onThemeToggle, onLogout }) => {
   const [editUser, setEditUser] = useState(user || {});
@@ -58,7 +60,7 @@ const ProfileModal = ({ user, onClose, onSave, theme, onThemeToggle, onLogout })
         alert('User not loaded or missing ID.');
         return;
       }
-      await fetch(`http://localhost:5000/api/users/${user._id}`, { method: 'DELETE' });
+      await axios.delete(`${API_BASE_URL}/api/users/${user._id}`);
       localStorage.clear();
       if (onClose) onClose();
       navigate('/');

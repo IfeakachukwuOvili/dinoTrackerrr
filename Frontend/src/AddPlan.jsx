@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from './config';
+import axios from 'axios';
 
 const AddPlan = () => {
   const navigate = useNavigate();
@@ -26,9 +28,9 @@ const AddPlan = () => {
   useEffect(() => {
     const userEmail = localStorage.getItem('userEmail');
     if (userEmail) {
-      fetch(`http://localhost:5000/api/plans?userEmail=${encodeURIComponent(userEmail)}`)
-        .then(res => res.ok ? res.json() : null)
-        .then(plans => {
+      axios.get(`${API_BASE_URL}/api/plans?userEmail=${encodeURIComponent(userEmail)}`)
+        .then(res => {
+          const plans = res.data;
           if (Array.isArray(plans) && plans.length > 0) {
             const plan = plans[0];
             setAnswers({
@@ -71,13 +73,9 @@ const AddPlan = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:5000/api/plans', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...answers, userEmail }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save plan');
+      const res = await axios.post(`${API_BASE_URL}/api/plans`, { ...answers, userEmail });
+      const data = res.data;
+      if (res.status !== 201) throw new Error(data.error || 'Failed to save plan');
       // Optionally show success message or navigate
       navigate('/mainpage');
     } catch (err) {
