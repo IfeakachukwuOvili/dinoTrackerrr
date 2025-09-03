@@ -337,7 +337,8 @@ function MainPage() {
           <input 
             type="date" 
             value={expenseDate} 
-            onChange={(e) => setExpenseDate(e.target.value)} 
+            onChange={(e) => setNewExpense({ ...newExpense, date: e.target.value })}
+             max={new Date().toISOString().split('T')[0]} // This prevents future dates
             required 
             style={{ padding: '10px', borderRadius: '5px', fontSize: '16px' }}
           />
